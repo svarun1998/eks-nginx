@@ -1,0 +1,1 @@
+# AWS Load Balancer Controller Setup for EKS Application Traffic

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: nginx
+  namespace: external-secrets
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: nginx
+
+  template:
+    metadata:
+      labels:
+        app: nginx
+
+    spec:
+
+      containers:
+
+      - name: nginx
+
+        image: nginx
+
+        env:
+
+        - name: USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: myapp-secret
+              key: USERNAME
+
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: myapp-secret
+              key: PASSWORD

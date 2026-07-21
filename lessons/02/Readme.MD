@@ -55,27 +55,16 @@ Configure an OIDC Identity Provider for your EKS cluster.
 
 # Step 2: Create Parameters in AWS Systems Manager Parameter Store
 
-Navigate to:
+Create the required parameters in **AWS Systems Manager Parameter Store** before proceeding.
 
-```
-AWS Console → Systems Manager → Parameter Store
-```
+Example:
 
-Create the following parameters.
-
-| Name | Type | Value |
-|------|------|------|
+| Parameter Name | Type | Value |
+|---------------|------|-------|
 | `/myapp/username` | String | admin |
 | `/myapp/password` | SecureString | MyPassword123 |
 
-Verify the parameters.
-
-```bash
-aws ssm get-parameter \
---name /myapp/username
-```
-
----
+> **Note:** You can organize your parameters using any naming convention that suits your application (for example, `/myapp/*`, `/dev/myapp/*`, or `/prod/myapp/*`). Ensure the parameter names match those referenced in your `ExternalSecret` resource.
 
 # Step 3: Create IAM Policy
 
@@ -440,24 +429,17 @@ admin
 
 # Step 12: Test Automatic Secret Synchronization
 
-Update the parameter.
+Update one or more parameter values in **AWS Systems Manager Parameter Store**.
 
-```bash
-aws ssm put-parameter \
---name /myapp/password \
---value NewPassword123 \
---overwrite
-```
+Wait for the configured `refreshInterval` (1 minute in this example).
 
-Wait for the configured refresh interval (1 minute by default).
-
-Verify that the Kubernetes Secret has been updated.
+Verify that the Kubernetes Secret has been synchronized with the latest values.
 
 ```bash
 kubectl get secret myapp-secret -o yaml
 ```
 
-Restart the application to reload the environment variables.
+If your application consumes secrets as environment variables, restart the deployment to load the updated values.
 
 ```bash
 kubectl rollout restart deployment nginx
